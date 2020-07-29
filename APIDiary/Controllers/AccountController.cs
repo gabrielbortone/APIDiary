@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Threading.Tasks;
 
 namespace APIDiary.Controllers
 {
@@ -21,7 +23,48 @@ namespace APIDiary.Controllers
             _configuration = configuration;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody] LoginUsuarioInfo userInfo)
+        {
+            var result = await _signInManager.PasswordSignInAsync(userInfo.Email,
+                userInfo.Password, isPersistent: false, lockoutOnFailure: false);
 
+            if (result.Succeeded)
+            {
+                return Ok(/*GeraToken(userInfo)*/);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Login Inválido....");
+                return BadRequest(ModelState);
+            }
+        }
+
+        private object GeraToken(LoginUsuarioInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody] RegisterUsuarioInfo userInfo)
+        {
+            var user = new Usuario
+            {
+                UserName = userInfo.Email,
+                Email = userInfo.Email,
+                EmailConfirmed = true
+            };
+
+            var result = await _userManager.CreateAsync(user, userInfo.Password);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            await _signInManager.SignInAsync(user, false);
+            return Ok(/*GeraToken(model)*/);
+        }
 
     }
 }

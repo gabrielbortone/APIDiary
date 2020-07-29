@@ -34,7 +34,7 @@ namespace APIDiary.Models
         public string Categoria { get; set; }
 
         public Usuario Usuario { get; set; }
-        public IEnumerable<Imagem> Imagens { get; set; }
+        public List<Imagem> Imagens { get; set; }
 
 
     }
