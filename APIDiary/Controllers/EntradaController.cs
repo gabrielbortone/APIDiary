@@ -91,7 +91,7 @@ namespace APIDiary.Controllers
             try
             {
                 UpdateImagens(entrada.Imagens, entrada);
-                _unitOfWork.EntradaRepository.AddEntrada(entrada);
+                _unitOfWork.EntradaRepository.UpdateEntrada(entrada);
                 _unitOfWork.Commit();
                 return Ok(entrada);
             }

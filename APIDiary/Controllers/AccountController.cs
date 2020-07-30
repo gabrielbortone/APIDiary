@@ -2,8 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 
 namespace APIDiary.Controllers
 {
@@ -31,7 +37,7 @@ namespace APIDiary.Controllers
 
             if (result.Succeeded)
             {
-                return Ok(/*GeraToken(userInfo)*/);
+                return Ok(GeraToken(userInfo));
             }
             else
             {
@@ -42,7 +48,35 @@ namespace APIDiary.Controllers
 
         private object GeraToken(LoginUsuarioInfo userInfo)
         {
-            throw new NotImplementedException();
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Email),
+                new Claim("meuPet","pipoca"),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["Jwt:key"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            
+            var expiracao = _configuration["TokenConfiguration:ExpireHours"];
+            var expiration = DateTime.UtcNow.AddHours(double.Parse(expiracao));
+
+            JwtSecurityToken token = new JwtSecurityToken(
+                issuer: _configuration["TokenConfiguration:Issuer"],
+                audience: _configuration["TokenConfiguration:Audience"],
+                claims: claims,
+                expires: expiration,
+                signingCredentials: credentials);
+
+            return new UsuarioToken()
+            {
+                Authenticated = true,
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Expiration = expiration,
+                Message = "Token JWT OK"
+            };
+
         }
 
         [HttpPost]
@@ -50,7 +84,7 @@ namespace APIDiary.Controllers
         {
             var user = new Usuario
             {
-                UserName = userInfo.Email,
+                UserName = userInfo.UserName,
                 Email = userInfo.Email,
                 EmailConfirmed = true
             };
@@ -63,7 +97,12 @@ namespace APIDiary.Controllers
             }
 
             await _signInManager.SignInAsync(user, false);
-            return Ok(/*GeraToken(model)*/);
+            var model = new LoginUsuarioInfo() 
+            { 
+                Email = userInfo.Email, 
+                Password = userInfo.Password 
+            };
+            return Ok(GeraToken(model));
         }
 
     }
