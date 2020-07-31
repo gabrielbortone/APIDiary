@@ -1,6 +1,7 @@
 using APIDiary.Models;
 using APIDiary.Repositories;
 using APIDiary.Repositories.Interfaces;
+using APIDiary.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,7 @@ namespace APIDiary
                 .AddDefaultTokenProviders();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<ImagemServices>();
 
             services.AddAuthentication(
                 JwtBearerDefaults.AuthenticationScheme).

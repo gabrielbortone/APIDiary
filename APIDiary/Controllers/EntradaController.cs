@@ -1,10 +1,9 @@
 ﻿using APIDiary.Models;
-using APIDiary.Models.ValueType;
 using APIDiary.Repositories.Interfaces;
+using APIDiary.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace APIDiary.Controllers
@@ -15,39 +14,13 @@ namespace APIDiary.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<Usuario> _userManager;
+        private readonly ImagemServices _imagemServices;
 
-        public EntradaController(IUnitOfWork unitOfWork, UserManager<Usuario> userManager)
+        public EntradaController(IUnitOfWork unitOfWork, UserManager<Usuario> userManager, ImagemServices imagemServices)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
-        }
-
-
-        private void AddImagens(List<Imagem> Imagens, Entrada entrada)
-        {
-            foreach (Imagem imagem in Imagens)
-            {
-                imagem.Entrada = entrada;
-                _unitOfWork.ImagemRepository.AddImagem(imagem);
-            }
-        }
-
-        private void UpdateImagens(List<Imagem> Imagens, Entrada entrada)
-        {
-            foreach (Imagem imagem in Imagens)
-            {
-                imagem.Entrada = entrada;
-                _unitOfWork.ImagemRepository.UpdateImagem(imagem);
-            }
-        }
-
-        private void RemoveImagens(List<Imagem> Imagens, Entrada entrada)
-        {
-            foreach (Imagem imagem in Imagens)
-            {
-                imagem.Entrada = entrada;
-                _unitOfWork.ImagemRepository.RemoveImagem(imagem.ImageId);
-            }
+            _imagemServices = imagemServices;
         }
 
         [HttpGet]
@@ -70,7 +43,7 @@ namespace APIDiary.Controllers
             try
             {
                 _unitOfWork.EntradaRepository.AddEntrada(entrada);
-                AddImagens(entrada.Imagens, entrada);
+                _imagemServices.AddImagens(entrada.Imagens, entrada);
                 _unitOfWork.Commit();
                 return Ok(entrada);
             }
@@ -90,7 +63,7 @@ namespace APIDiary.Controllers
 
             try
             {
-                UpdateImagens(entrada.Imagens, entrada);
+                _imagemServices.UpdateImagens(entrada.Imagens, entrada);
                 _unitOfWork.EntradaRepository.UpdateEntrada(entrada);
                 _unitOfWork.Commit();
                 return Ok(entrada);
@@ -112,7 +85,7 @@ namespace APIDiary.Controllers
 
             try
             {
-                RemoveImagens(entrada.Imagens, entrada);
+                _imagemServices.RemoveImagens(entrada.Imagens, entrada);
                 _unitOfWork.EntradaRepository.RemoveEntrada(id);
                 _unitOfWork.Commit();
                 return Ok();

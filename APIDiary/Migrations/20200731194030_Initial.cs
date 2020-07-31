@@ -183,8 +183,8 @@ namespace APIDiary.Migrations
                 {
                     ImageId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ImageUrl = table.Column<string>(maxLength: 250, nullable: false),
-                    EntradaId = table.Column<int>(nullable: true)
+                    ImageUrl = table.Column<string>(maxLength: 250, nullable: true),
+                    EntradaId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
