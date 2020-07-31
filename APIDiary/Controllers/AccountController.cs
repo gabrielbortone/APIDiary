@@ -50,7 +50,7 @@ namespace APIDiary.Controllers
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Email),
-                new Claim("meuPet","pipoca"),
+                new Claim("melhorLinux","KDE Neon"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

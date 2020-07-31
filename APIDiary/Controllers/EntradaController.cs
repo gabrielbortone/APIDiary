@@ -1,13 +1,16 @@
 ﻿using APIDiary.Models;
 using APIDiary.Repositories.Interfaces;
 using APIDiary.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.HttpSys;
 using System;
 using System.Threading.Tasks;
 
 namespace APIDiary.Controllers
 {
+    [Authorize(AuthenticationSchemes="Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class EntradaController : ControllerBase
