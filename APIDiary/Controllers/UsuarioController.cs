@@ -14,13 +14,13 @@ namespace APIDiary.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class UsuarioController : ControllerBase
     {
         private readonly UserManager<Usuario> _userManager;
         private readonly SignInManager<Usuario> _signInManager;
         private readonly IConfiguration _configuration;
 
-        public AccountController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager,
+        public UsuarioController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager,
             IConfiguration configuration)
         {
             _userManager = userManager;
@@ -28,7 +28,14 @@ namespace APIDiary.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost]
+        [HttpGet]
+        public ActionResult<string> Get()
+        {
+            return "UsuarioController :  Acessado em  : "
+               + DateTime.Now.ToLongDateString();
+        }
+
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginUsuarioInfo userInfo)
         {
             var result = await _signInManager.PasswordSignInAsync(userInfo.Email,
@@ -78,14 +85,15 @@ namespace APIDiary.Controllers
 
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterUsuarioInfo userInfo)
+        [HttpPost("registrar")]
+        public async Task<IActionResult> Registrar([FromBody] RegisterUsuarioInfo userInfo)
         {
             var user = new Usuario
             {
                 UserName = userInfo.UserName,
                 Email = userInfo.Email,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                PasswordHash = userInfo.Password
             };
 
             var result = await _userManager.CreateAsync(user, userInfo.Password);
