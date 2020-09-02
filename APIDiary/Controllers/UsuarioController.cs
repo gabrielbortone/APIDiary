@@ -36,7 +36,7 @@ namespace APIDiary.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginUsuarioInfo userInfo)
+        public async Task<IActionResult> Login([FromBody] LoginUsuarioInfoDto userInfo)
         {
             var result = await _signInManager.PasswordSignInAsync(userInfo.Email,
                 userInfo.Password, isPersistent: false, lockoutOnFailure: false);
@@ -52,12 +52,12 @@ namespace APIDiary.Controllers
             }
         }
 
-        private object GeraToken(LoginUsuarioInfo userInfo)
+        private object GeraToken(LoginUsuarioInfoDto userInfo)
         {
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Email),
-                new Claim("melhorLinux","KDE Neon"),
+                new Claim("melhorLinux","KDE_Neon"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -75,7 +75,7 @@ namespace APIDiary.Controllers
                 expires: expiration,
                 signingCredentials: credentials);
 
-            return new UsuarioToken()
+            return new UsuarioTokenDTO()
             {
                 Authenticated = true,
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
@@ -86,7 +86,7 @@ namespace APIDiary.Controllers
         }
 
         [HttpPost("registrar")]
-        public async Task<IActionResult> Registrar([FromBody] RegisterUsuarioInfo userInfo)
+        public async Task<IActionResult> Registrar([FromBody] RegisterUsuarioInfoDto userInfo)
         {
             var user = new Usuario
             {
@@ -104,7 +104,7 @@ namespace APIDiary.Controllers
             }
 
             await _signInManager.SignInAsync(user, false);
-            var model = new LoginUsuarioInfo() 
+            var model = new LoginUsuarioInfoDto() 
             { 
                 Email = userInfo.Email, 
                 Password = userInfo.Password 

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace APIDiary.Models
 {
-    public class UsuarioToken
+    public class UsuarioTokenDTO
     {
         public bool Authenticated { get; set; }
         public DateTime Expiration { get; set; }

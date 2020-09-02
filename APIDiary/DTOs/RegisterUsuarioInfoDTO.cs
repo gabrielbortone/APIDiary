@@ -2,7 +2,7 @@
 
 namespace APIDiary.Models
 {
-    public class RegisterUsuarioInfo
+    public class RegisterUsuarioInfoDto
     {
         public string UserName { get; set; }
         

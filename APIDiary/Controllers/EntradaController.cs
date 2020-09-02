@@ -31,7 +31,7 @@ namespace APIDiary.Controllers
         {
             var usuario = await _userManager.GetUserAsync(User);
             var entradas = _unitOfWork.EntradaRepository.GetAllEntrada(usuario.Id);
-            if(entradas == null)
+            if(usuario == null || entradas == null)
             {
                 return NotFound();
             }
