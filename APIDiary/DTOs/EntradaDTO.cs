@@ -1,5 +1,4 @@
 ﻿using APIDiary.Models;
-using APIDiary.Models.ValueType;
 using System;
 using System.Collections.Generic;
 
@@ -7,6 +6,7 @@ namespace APIDiary.DTOs
 {
     public class EntradaDTO
     {
+        public int EntradaId { get; set; }
         public string Titulo { get; set; }
         public DateTime DataEntrada { get; private set; }
         public DataHoraDTO HoraEntrada { get; set; }
@@ -18,7 +18,7 @@ namespace APIDiary.DTOs
 
         public EntradaDTO()
         {
-            DataEntrada = DateTime.Now;
+            DataEntrada = DateTime.Now.Date;
         }
     }
 }

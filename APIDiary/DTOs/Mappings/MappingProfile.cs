@@ -10,7 +10,7 @@ namespace APIDiary.DTOs.Mappings
         public MappingProfile()
         {
             CreateMap<Entrada, EntradaDTO>().ReverseMap();
-            CreateMap<DateTime, DataHoraDTO>().ReverseMap();
+            CreateMap<DataHoraDTO, DateTime>();
             CreateMap<Imagem, ImagemDTO>().ReverseMap();
         }
     }
