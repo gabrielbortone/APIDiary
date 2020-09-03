@@ -1,7 +1,9 @@
+using APIDiary.DTOs.Mappings;
 using APIDiary.Models;
 using APIDiary.Repositories;
 using APIDiary.Repositories.Interfaces;
 using APIDiary.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,7 +28,15 @@ namespace APIDiary
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            
+
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             

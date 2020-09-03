@@ -38,7 +38,7 @@ namespace APIDiary.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginUsuarioInfoDto userInfo)
         {
-            var result = await _signInManager.PasswordSignInAsync(userInfo.Email,
+            var result = await _signInManager.PasswordSignInAsync(userInfo.UserName,
                 userInfo.Password, isPersistent: false, lockoutOnFailure: false);
 
             if (result.Succeeded)
@@ -56,7 +56,7 @@ namespace APIDiary.Controllers
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Email),
+                new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.UserName),
                 new Claim("melhorLinux","KDE_Neon"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
@@ -106,7 +106,7 @@ namespace APIDiary.Controllers
             await _signInManager.SignInAsync(user, false);
             var model = new LoginUsuarioInfoDto() 
             { 
-                Email = userInfo.Email, 
+                UserName = userInfo.UserName, 
                 Password = userInfo.Password 
             };
             return Ok(GeraToken(model));

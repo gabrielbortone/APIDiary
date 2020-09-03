@@ -35,17 +35,25 @@ namespace APIDiary.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllEntradas()
         {
-            var usuario = await _userManager.GetUserAsync(User);
-            var entradas = _unitOfWork.EntradaRepository.GetAllEntrada(usuario.Id).ToList();
-
-            if(usuario == null || entradas == null)
+            try
             {
-                return NotFound();
+                var usuario = await _userManager.GetUserAsync(User);
+                var entradas = _unitOfWork.EntradaRepository.GetAllEntrada(usuario.Id).ToList();
+                if (usuario == null || entradas == null)
+                {
+                    return NotFound();
+                }
+                var entradasDTOs = _mapper.Map<List<EntradaDTO>>(entradas);
+
+                return Ok(entradasDTOs);
             }
 
-            var entradasDTOs = _mapper.Map<List<EntradaDTO>>(entradas);
+            catch (Exception Ex)
+            {
+                return BadRequest(Ex.Message);
+            }
 
-            return Ok(entradasDTOs);
+            
         }
 
         [HttpPost]
